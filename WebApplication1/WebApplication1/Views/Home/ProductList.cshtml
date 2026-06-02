@@ -1,0 +1,214 @@
+﻿@model IEnumerable<Product>
+
+<form asp-controller="Home" asp-action="SearchKeyword" target="_self" method="get" accept-charset="UTF-8">
+    <span>商品搜尋:</span><input name="keyword" /><button type="submit">搜尋</button>
+</form>
+<hr style="border-width:5px;">
+<div id="topdiv" class="product_Show">
+    <form  id="myform" method="post" hidden="hidden">
+        @Html.AntiForgeryToken()
+        <input id="idinput"  name="idSelected" hidden="hidden" />
+        <input id="buynumber" name="buyNumber" type="number" hidden="hidden" />
+    </form>
+    @{
+        if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div  class="product_Item">
+                    <div class="img_Space">
+                        <img src="~/ProductPicture/@(item.ID).jpeg" asp-append-version="true" width="300" alt="無商品圖片" title="@(item.Name)商品圖" />
+                    </div>
+                    <div class="product_Text_Space">
+                        <div>
+                            <strong class="flex_maxcontent">商品名稱:</strong>
+                            <div class="none overflow_Auto overflow_wrap_anywhere" id="@(item.ID)Name">@item.Name</div>
+                        </div>
+                        <div class="text_Space_Describe">
+                            <strong>商品描述:</strong>
+                            <div class="none">@item.Describe</div>
+                        </div>
+                        <div>
+                            <strong class="flex_maxcontent">價格:</strong>
+                            <div class="none overflow_Auto overflow_wrap_anywhere" id="@(item.ID)Price">@(item.Price)元</div>
+                        </div>
+                        <div class="product_Show_Button_Space">
+                            @if (ViewData["WhichPageCome"] == "Home")
+                            {
+                                <button id="@item.ID" name="Buy" type="button">立刻購買</button>
+                                <button id="@item.ID" name="Add" type="button">加入購物車</button>
+                            }
+                            else if (ViewData["WhichPageCome"] == "Edit")
+                            {
+                                <button id="@item.ID" name="EditProduct" type="button">修改商品</button>
+                            }
+                            else if (ViewData["WhichPageCome"] == "Delete")
+                            {
+                                <button id="@item.ID" name="DeleteProduct" type="button">刪除商品</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+               <div style="border:1px solid black;"></div>
+            }
+        }
+        else
+        {
+            <text>無商品</text>
+        }
+    }
+</div>
+<div id="productNumberPage" class="block">
+    <div class="center_Page">
+        <div class="input_Space">
+            <strong class="input_Space_Label">商品名稱:</strong>
+            <div id="numberPageProductName" class="input_Space_Input overflow_Auto overflow_wrap_anywhere"></div>
+        </div>
+        <div class="input_Space">
+            <strong class="input_Space_Label">價格:</strong>
+            <div id="numberPageProductPrice" class="input_Space_Input overflow_Auto overflow_wrap_anywhere"></div>
+        </div>
+        <div class="input_Space">
+            <strong class="input_Space_Label">請選擇數量:</strong>
+            <div class="number_Input_Space input_Space_Input">
+                <button id="minus" type="button">-</button>
+                <input id="numberInput" value="1" type="text" pattern="\d*">
+                <button id="plus" type="button">+</button>
+            </div>
+        </div>
+        <div class="addProduct_Form_Space_Button_Space">
+            <button mode="" id="numberSubmit" type="button">確定</button>
+            <button id="numberCancel" type="button">取消</button>
+        </div>
+    </div>
+</div>
+@await Html.PartialAsync("MessagePage")
+<script>
+    /*立刻購買、加入購物車、修改商品、刪除商品按鈕邏輯*/
+    const numberSubmitButton = document.getElementById('numberSubmit');
+    const topdiv = document.getElementById('topdiv');
+    const numberPage = document.getElementById('productNumberPage');
+    const numberInput = document.getElementById('numberInput');
+    topdiv.addEventListener('click',function(e)
+    {
+        if(e.target.tagName === 'BUTTON')
+        {
+            const form = document.getElementById('myform');
+            const idInput = document.getElementById('idinput');
+            idInput.value = e.target.id;
+            if(e.target.name === 'Add' || e.target.name === 'Buy')
+            {
+                numberSubmitButton.setAttribute('mode',e.target.name);
+                const productName = document.getElementById(`${e.target.id}Name`);
+                const productPrice = document.getElementById(`${e.target.id}Price`);
+                const numberPageProductName =  document.getElementById('numberPageProductName');
+                const numberPageProductPrice =  document.getElementById('numberPageProductPrice');
+                numberPageProductName.textContent = productName.textContent;
+                numberPageProductPrice.textContent = productPrice.textContent;
+                numberInput.value = '1';
+                numberPage.style.display = 'flex';
+            }
+            else
+            {
+                //修改產品頁面修改按鈕、刪除產品頁面刪除按鈕邏輯
+                form.action = `/Edit/${e.target.name}`;
+                form.submit();
+            }
+        }
+    });
+    
+    numberSubmitButton.addEventListener('click',function(e)
+    {
+        const form = document.getElementById('myform');
+        const buyNumber = document.getElementById('buynumber');
+        buyNumber.value = numberInput.value;
+        MessagePageShow();
+        try
+        {
+            (async () =>
+            {
+                const response =  await fetch('/api/ShoppingCarProcess/Check',{
+                    method:'POST',
+                    body: new FormData(form),
+                });
+                if (!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                const result =  await response.text();
+                if(result === 'Yes')
+                {
+                    numberPage.style.display = 'none';
+                    MessageDisplay(false,'購物車已存在此商品');
+                }
+                else if(result === 'No')
+                {
+                    const response = await fetch('/api/ShoppingCarProcess/Add',{
+                        method:'POST',
+                        body: new FormData(form),
+                    });
+                    if (!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                    const result =  await response.text();
+                    if(result === 'success')
+                    {
+                        countIncrease();
+                        if(e.target.getAttribute('mode') === 'Add')
+                        {
+                            numberPage.style.display = 'none';
+                            MessageDisplay(true,'成功加入購物車');
+                        }
+                        else if(e.target.getAttribute('mode') === 'Buy')
+                        {
+                            form.action = '@Url.Action("ShoppingCar", "Buy")';
+                            form.submit();
+                        }
+                    }
+                    else if(result === 'false')
+                    {
+                        numberPage.style.display = 'none';
+                        if(e.target.getAttribute('mode') === 'Add')
+                        {
+                            MessageDisplay(false,'加入購物車失敗');
+                        }
+                        else if(e.target.getAttribute('mode') === 'Buy')
+                        {
+                            MessageDisplay(false,'發生錯誤請聯繫客服');
+                        }
+                    }
+                }
+            }) ();
+        }
+        catch(error)
+        {
+            numberPage.style.display = 'none';
+            MessageDisplay(false,'發生錯誤');
+            console.log(error);
+        }
+        
+    });
+    /*數量選擇頁面，取消按鈕邏輯*/
+    const numberPageCancelButton = document.getElementById('numberCancel');
+    numberPageCancelButton.addEventListener('click',function(e)
+    {
+        numberInput.value = '1';
+        numberPage.style.display = 'none';
+    })
+    /*產品數量輸入格式檢查*/
+    numberInput.addEventListener('input',function(e)
+    {
+        this.value = this.value.replace(/[^\d]+/g, '').replace(/0\d+/g,'0');
+    });
+    /*+按鈕邏輯*/
+    const plusButton = document.getElementById('plus');
+    plusButton.addEventListener('click',function(e)
+    {
+        numberInput.value = Number(numberInput.value) + 1;
+    });
+    /*-按鈕邏輯*/
+    const minusButton = document.getElementById('minus');
+    minusButton.addEventListener('click',function(e)
+    {
+        if(Number(numberInput.value) === 0) numberInput.value = 0;
+        else
+        {
+            numberInput.value = Number(numberInput.value) - 1;
+        }
+    });
+</script>

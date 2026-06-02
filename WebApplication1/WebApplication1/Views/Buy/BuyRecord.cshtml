@@ -1,0 +1,71 @@
+﻿@model IEnumerable<ShoppingRecord>
+<h1>購買紀錄</h1>
+<hr style="border-width:5px; border-color:cornflowerblue">
+<div class="product_Show">
+    @{
+        if (Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <div class="product_Item">
+                    <div class="img_Space">
+                        <img src="~/ProductPicture/@(item.ProductID).jpeg" asp-append-version="true"  alt="無商品圖片" title="@(item.ProductName)商品圖" />
+                    </div>
+                    <div class="product_Text_Space">
+                        <div>
+                            <strong class="flex_maxcontent">商品名稱:</strong>
+                            <div class="none overflow_Auto overflow_wrap_anywhere">@item.ProductName</div>
+                        </div>
+                        <div>
+                            <strong class="flex_maxcontent">商品價格:</strong>
+                            <div class="none overflow_Auto overflow_wrap_anywhere">@(item.ProductPrice)元</div>
+                        </div>
+                        <div>
+                            <strong class="flex_maxcontent">購買數量:</strong>
+                            <div class="none overflow_wrap_anywhere">@item.ProductCount</div>
+                        </div>
+                        <div id="buyTime">
+                            <strong class="flex_maxcontent">購買時間:</strong>
+                            <div class="none">@item.ShoppingTime</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="border:1px solid black;"></div>
+            }
+        }
+        else
+        {
+            <text>無購買紀錄</text>
+        }
+    }
+</div>
+<style>
+    .container {
+        text-align:center;
+    }
+
+    .product_Text_Space {
+        text-align: left;
+    }
+
+    .product_Item {
+        flex: 0 0 200px;
+    }
+
+    .img_Space {
+        flex: 0 0.4 200px;
+    }
+
+    .img_Space img {
+        max-width:200px;
+    }
+
+    @@media(max-width:770px)
+    {
+        #buyTime 
+        {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>

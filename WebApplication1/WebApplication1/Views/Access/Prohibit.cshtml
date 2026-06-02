@@ -1,0 +1,20 @@
+﻿<div class="processResult_space">
+    <img class="result_image" src="~/Prohibit.png" asp-append-version="true" />
+    <p>@ViewData["message"]</p>
+    <p>頁面將在<span id="timer">5</span>秒後.....跳轉至<a asp-controller="Home" asp-action="HomePage">首頁</a></p>
+</div>
+@section Scripts {
+    <script>
+        let seconds = 5;
+        const timerElement = document.getElementById('timer');
+        const countdown = setInterval(() => {
+            seconds--;
+            timerElement.textContent = seconds;
+
+            if (seconds <= 0) {
+                clearInterval(countdown);
+                window.location.replace('@Url.Action("HomePage", "Home")');
+            }
+        }, 1000);
+    </script>
+}

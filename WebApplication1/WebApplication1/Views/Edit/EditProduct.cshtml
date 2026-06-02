@@ -1,0 +1,62 @@
+﻿@model EditProductViewModel
+
+<div class="addProduct_Page">
+    <h1>修改商品</h1>
+    <hr style="border-width:5px; border-color:cornflowerblue">
+    <div class="addProduct_Form_Space">
+        <form asp-controller="Edit" asp-action="EditProduct" method="post" target="_self" accept-charset="UTF-8" enctype="multipart/form-data">
+            <input asp-for="ID" hidden="hidden" />
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Name"></label>
+                <input class="input_Space_Input" asp-for="Name">
+            </div>
+            <span class="error_Message" asp-validation-for="Name"></span>
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Describe"></label>
+                <textarea class="input_Space_Input" asp-for="Describe" cols="30" rows="8"></textarea>
+            </div>
+            <span class="error_Message" style="display:none;" asp-validation-for="Describe"></span>
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Price"> </label>
+                <input class="input_Space_Input" type="number" asp-for="Price">
+            </div>
+            <span class="error_Message" asp-validation-for="Price"></span>
+            <div class="input_Space">
+                <span class="input_Space_Label">目前商品圖片:</span>
+                @if (Model.ID == "none")
+                {
+                    <div style="text-align:left">無商品圖片</div>
+                }
+                else
+                {
+                    <div class="input_Space_Input overflow_Auto">
+                        <img src=" ~/ProductPicture/@(Model.ID).jpeg" width="300" asp-append-version="true" />
+                    </div>
+                }
+            </div>
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Picture"></label>
+                <input class="input_Space_Input" type="file" asp-for="Picture" accept=".jpg, .jpeg, .png," />
+            </div>
+            <div class="addProduct_Form_Space_Button_Space">
+                <button  class="btn btn-success btn-lg" type="submit">確定</button>
+                <a asp-controller="Home" asp-action="HomePage" class="btn btn-secondary btn-lg">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+@await Html.PartialAsync("MessagePage")
+<script>
+    const form = document.querySelector('.addProduct_Page form');
+    form.addEventListener('submit',function(e){
+        if($(this).valid())
+        {
+            MessagePageShow();
+        }
+    });  
+</script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+     }
+}

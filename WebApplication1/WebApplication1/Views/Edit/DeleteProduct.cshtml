@@ -1,0 +1,40 @@
+﻿@model DeleteProductViewModel
+
+<div class="addProduct_Page">
+    <h1>確認刪除商品</h1>
+    <hr style="border-width:5px; border-color:cornflowerblue">
+    <div class="addProduct_Form_Space">
+        <form asp-controller="Edit" asp-action="DeleteProduct" method="post" target="_self" accept-charset="UTF-8" enctype="multipart/form-data">
+            <input name="idDeleted" value=@Model.ID  hidden="hidden" />
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Name"></label>
+                <span class="input_Space_Input align_left outline_style">@Model.Name</span>
+            </div>
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Describe"></label>
+                <textarea class="input_Space_Input" asp-for="Describe" cols="30" rows="8" readonly="readonly"></textarea>
+            </div>
+            <div class="input_Space">
+                <label class="input_Space_Label" asp-for="Price"></label>
+                <span class="input_Space_Input align_left outline_style">@Model.Price</span>
+            </div>
+            <div class="input_Space">
+                <spqn class="input_Space_Label" >商品圖片:</spqn>
+                <div class="input_Space_Input img_Frame">
+                    <img src="~/ProductPicture/@(Model.ID).jpeg" width="300" asp-append-version="true" />
+                </div>
+            </div>
+            <div class="addProduct_Form_Space_Button_Space">
+                <button class="btn btn-success btn-lg" type="submit">確定</button>
+                <a asp-controller="Home" asp-action="HomePage" class="btn btn-secondary btn-lg">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+@await Html.PartialAsync("MessagePage")
+<script>
+    const form = document.querySelector('.addProduct_Page form');
+    form.addEventListener('submit',function(e){
+        MessagePageShow();
+    });
+</script>

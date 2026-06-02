@@ -1,0 +1,66 @@
+﻿/*訊息顯示頁面*/
+#messagePagebackground {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0,0.5); 
+    position: fixed;
+    top: 0;
+    left: 0;
+    text-align: center;
+    display: none;
+}
+
+.message_Page {
+    width: 500px;
+    background-color: white;
+    display: inline-flex;
+    flex-direction: column;
+    row-gap: 5px;
+    border-radius: 10px;
+    margin-top: 20px; 
+    align-items: center;
+    font-size: 25px;
+}
+
+#circleRotation {
+    width: var(--cricle_width);
+    height: var(--cricle_width);
+    border-width: 10px;
+    border-color: rgb(0,0,0) rgb(0,0,0,0.2) rgb(0,0,0,0.4) rgb(0,0,0,0.7);
+    border-style: solid dashed dashed dashed;
+    border-radius: calc(var(--cricle_width) / 2);
+    background-color: white;
+    animation-name: Rotation;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    animation-duration: 2s;
+}
+@keyframes Rotation {
+    100% { transform: rotate(360deg); }
+}
+
+#messagePageImage {
+    width: var(--cricle_width);
+    display: none;
+}
+
+#messagePageButton {
+    margin-bottom: 5px;
+}
+
+@media (max-width:520px) {
+    .message_Page 
+    {
+        width: 90%;
+        font-size: 18px;
+    }
+    :root {
+        --cricle_width: 33vw;
+    }
+}
+
+@media (max-height:520px) {
+    :root {
+        --cricle_width: 100px;
+    }
+}

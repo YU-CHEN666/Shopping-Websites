@@ -1,0 +1,178 @@
+﻿.product_Show {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+}
+
+.product_Item {
+    display: flex;
+    flex: 0 0 400px;
+}
+
+.img_Space{
+    overflow: auto;
+    flex: 0 0.4 300px;
+}
+
+.img_Space img {
+    width: 100%;
+}
+
+.product_Text_Space {
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.text_Space_Describe {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.text_Space_Describe div {
+    flex: 1 1 100px;
+    overflow: auto;
+}
+
+.product_Text_Space div:not([class]) {
+    display: flex;
+    column-gap: var(--column_spacing);
+}
+
+.flex_maxcontent {
+    flex: 0 0 max-content;
+}
+
+.product_Show_Button_Space {
+    display: flex;
+    column-gap: var(--column_spacing);
+}
+
+@media (max-width:500px) {
+    .product_Item
+    {
+         flex-direction: column;
+    }
+    .img_Space img 
+    {
+       max-width: 300px;
+    }
+    .img_Space 
+    {
+       text-align: center;
+    }
+    .product_Text_Space
+    {
+        font-size: 19px;
+    }
+    .product_Show_Button_Space
+    {
+        font-size: 20px;
+    }
+}
+/*斷行設定*/
+.overflow_wrap_anywhere {
+    overflow-wrap: anywhere;
+}
+/*購物車旁數量*/
+#shoppingCarForm {
+    position: relative;
+}
+
+#shoppingCarCount {
+    position: absolute;
+    pointer-events: none;
+    width: var(--shoppingCarCount_width_height);
+    height: var(--shoppingCarCount_width_height);
+    line-height: var(--shoppingCarCount_width_height);
+    border-radius: calc(var(--shoppingCarCount_width_height) / 2);
+    text-align: center;
+    font-size: 10px;
+    color: white;
+    background-color: red;
+    top: -2px;
+    right: -2px;
+    display: none;
+}
+
+@media (max-width:576px){
+    #shoppingCarCount
+    {
+        right: 0;
+        top: -1px;
+        left: 37px;
+    }
+}
+/*選擇數量小頁面*/
+.block {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(0,0,0,0.5); 
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
+
+.center_Page {
+    width: 500px;
+    max-height: 90vh;
+    overflow: auto;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.number_Input_Space {
+    display: flex;
+    column-gap: var(--column_spacing);
+}
+    
+#numberInput,.numberInput {
+    width: 100%;
+    min-width: 0;
+    flex: 0 1 200px;
+}
+
+#minus,#plus,.minus,.plus {
+    width: 40px;
+    height: 40px;
+    line-height: 30px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 20px;
+    align-self: center;
+}
+
+#minus:hover,#plus:hover {
+    background-color: rgb(132,155,255);
+} 
+
+@media(max-width:520px)
+{
+    #minus, #plus {
+        width: 20px;
+        height: 20px;
+        line-height: 10px;
+        text-align: center;
+        padding-left: 0;
+        padding-right: 0;
+        border-radius: 10px;
+    }
+
+    .center_Page {
+        width: 90%;
+        font-size: 20px;
+    }
+} 
+
+
+
+    

@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>實作開發網站</title>
+    <meta name="description" content="學習ASP.NET Core 實作的專案網站"/>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApplication1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Variable.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/AddEditProduct.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/ProcessResult.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/HomePage.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MessagePage.css" asp-append-version="true" />
+</head>
+<body style="margin-bottom:0;">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="HomePage">首頁</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1" style="justify-content:flex-end;column-gap:5px;">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <form asp-controller="Edit" asp-action="AddProductPage" method="post" target="_self">
+                                    <button class="nav-link text-dark" type="submit">新增商品</button>
+                                </form>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Home" asp-action="EditProductPage" method="post" target="_self">
+                                    <button class="nav-link text-dark" type="submit">修改商品</button>
+                                </form>
+                            </li>
+                            if (User.IsInRole("root"))
+                            {
+                                <li class="nav-item">
+                                    <form asp-controller="Home" asp-action="DeleteProductPage" method="post" target="_self">
+                                        <button class="nav-link text-dark" type="submit">刪除商品</button>
+                                    </form>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <form asp-controller="Buy" asp-action="BuyRecord" method="post" target="_self">
+                                    <button class="nav-link text-dark" type="submit">購物紀錄</button>
+                                </form>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <form id="shoppingCarForm" asp-controller="Buy" asp-action="ShoppingCar" method="post" target="_self">
+                                <button class="nav-link text-dark" type="submit">購物車</button>
+                                <div id="shoppingCarCount">0</div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                @if(User.Identity.IsAuthenticated)
+                {
+                    string userName = User.FindFirstValue(ClaimTypes.Name);
+                    <div id="layoutUserName" style="width:65px; height:100%; overflow:hidden; white-space: nowrap; text-overflow: ellipsis;">Hi @userName</div>
+                    <form asp-controller="Access" asp-action="LogOut" method="post" target="_self">
+                        <button style="border:none; background:transparent;" type="submit">登出</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Access" asp-action="Login" method="post" target="_self">
+                        <button style="border:none; background:transparent;" type="submit">登入</button>
+                    </form>
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3" style="padding:0 !important;">
+            @RenderBody()
+        </main>
+    </div>
+    <style>
+        button.nav-link:hover, button:hover {
+            color: crimson !important;
+        }
+    </style>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/ShoppingCarCount.js" asp-append-version="true"></script>
+    <script src="~/js/MessagePage.js" asp-append-version="true"></script>
+    <script src="~/js/SSE.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

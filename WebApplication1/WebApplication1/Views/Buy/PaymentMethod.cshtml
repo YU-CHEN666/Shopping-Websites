@@ -1,0 +1,85 @@
+﻿@model string[]
+<div class="payPage">
+    <div class="payPage_Form_Space">
+        <form id="paymentMethodForm" class="myform" asp-controller="Buy" asp-action="PayResult" method="post" target="_self">
+            @foreach (var item in Model)
+            {
+                <div>
+                    <input type="radio" name="paymentMethod" value="@item" required/><span>@item</span>
+                </div>
+            }
+            <div style="display:none;"></div>
+            <div class="payPage_Form_Button_Space">
+                <button id="confirmButton" type="submit">確定</button>
+                <button id="cancelButton" type="button">取消</button>
+            </div>
+        </form>
+    </div>
+</div>
+@await Html.PartialAsync("MessagePage")
+<style>
+    .payPage {
+        text-align: center;
+    }
+
+    .payPage_Form_Space {
+        display: inline-block;
+    }
+
+    .myform {
+        display: flex;
+        flex-direction: column;
+        font-size: 25px;
+        text-align: start;
+    }
+
+    .myform div input {
+        margin-right: var(--column_spacing);
+        width: var(--input_Radio_Size);
+        height: var(--input_Radio_Size);
+    }
+
+    .myform input:checked + span {
+        color: crimson;
+    }
+
+    .payPage_Form_Button_Space
+    {
+        display: flex;
+        justify-content: space-evenly;
+        margin-top: 10px;
+    }
+</style>
+@section Scripts {
+    <script>
+        const cancelButton = document.getElementById('cancelButton');
+        cancelButton.addEventListener('click', function(e) {
+            window.location.replace('@Url.Action("HomePage", "Home")');
+        });
+        const form = document.getElementById('paymentMethodForm');
+        form.addEventListener('submit',function(e) {
+            if(!document.getElementById("layoutUserName"))
+            {
+                e.preventDefault();
+                fetch('/api/ShoppingCarProcess/Count', {
+                    method: 'POST',
+                    body: new FormData(form),
+                }).then(response => {
+                    if(!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                    return response.text();
+                }).then(result => {
+                    if(result === '0')
+                    {
+                        MessageDisplayInformation('購物車已被清除，請至首頁重新將商品加入購物車'); 
+                        return;
+                    }
+                    form.submit();
+                }).catch(error => {
+                    MessageDisplay(false,'發生錯誤');
+                    console.log(error);
+                });
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,307 @@
+﻿@{
+    Layout = null;
+}
+@model LoginViewModel
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="SIE,YU-CHEN">
+    <meta name="description" content="登入頁面">
+    <title>實作開發網站</title>
+    <link rel="stylesheet" href="~/css/Variable.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/MessagePage.css" asp-append-version="true" />
+    <style>
+        :root {
+            --side: 55vh;
+            --half-side: calc(var(--side) / 2);
+            --hypotenuse: calc(var(--half-side) * 1.414);
+            --radius: calc(calc(var(--side) - var(--hypotenuse)) / 2);
+        }
+
+        :root:has(button:is(:hover, :focus)) * {
+                animation-play-state: paused;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .color {
+            flex: 0 0 var(--side);
+            height: var(--side);
+            margin: 0 0 0 0;
+            background: conic-gradient( red 0deg, red 45deg, orange 45deg, orange 90deg, yellow 90deg, yellow 135deg, green 135deg, green 180deg, blue 180deg, blue 225deg, indigo 225deg, indigo 270deg, purple 270deg, purple 315deg, fuchsia 315deg, fuchsia 360deg);
+            transform: translateX(calc(var(--half-side) * -1));
+            clip-path: circle(var(--radius) at calc(var(--half-side) + var(--radius)) var(--radius));
+            animation-name: center_rotation;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-duration: 3s;
+            animation-delay: 5s;
+        }
+
+        @@keyframes center_rotation {
+            12.5% {
+                clip-path: circle(var(--radius) at calc(var(--side) - var(--radius)) calc(var(--half-side) - var(--radius)));
+            }
+
+            25% {
+                clip-path: circle(var(--radius) at calc(var(--side) - var(--radius)) calc(var(--half-side) + var(--radius)));
+            }
+
+            37.5% {
+                clip-path: circle(var(--radius) at calc(var(--half-side) + var(--radius)) calc(var(--side) - var(--radius)));
+            }
+
+            50% {
+                clip-path: circle(var(--radius) at calc(var(--half-side) - var(--radius)) calc(var(--side) - var(--radius)));
+            }
+
+            62.5% {
+                clip-path: circle(var(--radius) at var(--radius) calc(var(--half-side) + var(--radius)));
+            }
+
+            75% {
+                clip-path: circle(var(--radius) at var(--radius) calc(var(--half-side) - var(--radius)));
+            }
+
+            87.5% {
+                clip-path: circle(var(--radius) at calc(var(--half-side) - var(--radius)) var(--radius));
+            }
+        }
+
+        .doorspace {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .camera {
+            flex: 0 0 var(--side);
+            height: var(--side);
+            perspective: 300px;
+            display: flex;
+            transform: translateX(calc(var(--half-side) * -1));
+        }
+
+        .leftdoor, .rightdoor {
+            flex: 0 0 var(--half-side);
+            height: 100%;
+            background: black;
+            display: inline-block;
+        }
+
+        .leftdoor {
+            transform-origin: left;
+            animation-name: left_rotation,disappear;
+            animation-duration: 3s,0.5s;
+            animation-delay: 0.5s,3.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .rightdoor {
+            transform-origin: right;
+            animation-name: right_rotation,disappear;
+            animation-duration: 3s,0.5s;
+            animation-delay: 0.5s,3.5s;
+            animation-fill-mode: forwards;
+        }
+
+        .no {
+            flex: 0 0 var(--side);
+            height: var(--side);
+        }
+
+        @@keyframes left_rotation {
+            100% {
+                transform: rotateY(-180deg);
+            }
+        }
+
+        @@keyframes right_rotation {
+            100% {
+                transform: rotateY(180deg);
+            }
+        }
+
+        @@keyframes disappear {
+            100% {
+                filter: opacity(0);
+            }
+        }
+
+        .formspace {
+            outline: solid 1px black;
+            background: white;
+            font-size: 20px;
+            flex: 0 0 var(--side);
+            height: var(--side);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            box-shadow: 5px 5px 0px 5px, 10px 10px 0px 5px, 15px 15px 0px 5px;
+            transform: translateX(var(--half-side));
+            animation-name: goBack;
+            animation-duration: 1s;
+            animation-delay: 4s;
+            animation-fill-mode: forwards;
+        }
+
+        @@keyframes goBack {
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        form {
+            flex: 0 0 70%;
+            display: flex;
+            flex-direction: column;
+            row-gap: 7px;
+        }
+
+        form * {
+            width:100%;
+        }
+        input {
+            font-size: 20px;
+            box-sizing: border-box;
+        }
+
+        .error_Message {
+            margin: -4px 0 0 0;
+            font-size: 18px;
+            color: red;
+        }
+
+        .buttonspace {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        button {
+            flex: 0 0 40%;
+            font-size: 20px;
+        }
+
+        @@media (min-width: 500px) and (max-width: 1300px) {
+            :root 
+            {
+               --side: 50vh;
+            }
+            body, .doorspace         
+            {
+                flex-direction: column;
+            }
+            .color, .formspace, .camera, .no {
+                flex: 0 0 var(--side);
+                width: var(--side);
+            }
+
+            .color, .camera, .formspace {
+                transform: none;
+            }
+        }
+
+        @@media (max-width: 500px) {
+            .color, .doorspace, .no {
+                display: none;
+            }
+            .formspace {
+                flex: 0 0 80%; 
+                transform: none;
+                animation-name: none;
+            }
+        }
+    
+        @@media (max-height: 600px) and (max-width: 500px) {
+            .formspace {
+                height: 350px;
+            }
+        }
+
+        @@media (max-height: 600px) and (min-width: 500px) {
+            .color, .doorspace, .no {
+                display: none;
+            }
+
+            .formspace {
+                width: 60vw;
+                max-width: 450px;
+                flex: 0 0 350px;
+            }
+        }
+
+        @@media (max-height: 350px) and (max-width: 500px) {
+            body {
+                align-items: flex-start;
+            }
+        }
+
+        @@media (max-height: 350px) and (min-width: 500px) {
+            body {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="color"></div>
+    <div class="doorspace">
+        <div class="camera">
+            <div class="leftdoor"></div>
+            <div class="rightdoor"></div>
+        </div>
+        <div class="no"></div>
+    </div>
+    <div class="formspace">
+        <form id="myForm" asp-controller="Access" asp-action="Login" method="post" target="_self" accept-charset="UTF-8">
+            <label asp-for="Account"></label>
+            <input asp-for="Account">
+            <span class="error_Message" asp-validation-for=" Account"></span>
+            <label asp-for="Password" typeof="password"></label>
+            <input asp-for="Password" type="password">
+            <span class="error_Message" asp-validation-for="Password"></span>
+            <div class="buttonspace">
+                <button id="submit" type="submit">登入</button>
+                <button id="register" type="submit">註冊</button>
+            </div>
+        </form>
+    </div>
+    @await Html.PartialAsync("MessagePage")
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/lib/MessagePage.js" asp-append-version="true"></script>
+    <script>
+        const form = document.getElementById('myForm');
+        const divContainer = document.querySelector('.formspace');
+        divContainer.addEventListener('click',function(e) {
+            if(e.target.tagName === 'BUTTON')
+            {
+                if($(form).valid())
+                {
+                    MessagePageShow();
+                    if(e.target.id === 'register')
+                    {
+                        form.action = '@Url.Action("Register", "Access")';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+﻿.processResult_space {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 30px;
+}
+
+.result_image {
+    display: inline-block;
+    width: 25%;
+}
+
+@media(max-height:601px){
+    .result_image
+    {
+        width: 45vh;
+        max-width: 200px;
+    }
+}

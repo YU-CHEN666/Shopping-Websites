@@ -1,0 +1,111 @@
+﻿/*AddProduct、EditProduct 的CSS*/
+
+.addProduct_Page {
+	text-align: center;
+}
+
+.addProduct_Form_Space {
+	width: 50%;
+	display: inline-block;
+}
+
+.addProduct_Form_Space form {
+	display: flex;
+	flex-direction: column;
+	row-gap: 7px;
+	font-size: 20px;
+}
+
+.input_Space {
+	display: flex;
+	flex-direction: row;
+	column-gap: var(--column_spacing);
+}
+
+.input_Space_Input {
+	flex:auto;
+}
+
+.input_Space_Label {
+	flex: 0 0 auto;
+}
+
+.input_Space textarea{
+	resize:none;
+	flex: auto;
+}
+
+.error_Message {
+	margin: -5px 0 0 calc(84.61px + var(--column_spacing));
+	text-align: left;
+	color: red;
+}
+
+.addProduct_Form_Space_Button_Space {
+	display: flex;
+	justify-content: space-evenly;
+	margin: 10px 0 0 0;
+}
+
+.addProduct_Form_Space_Button_Space *{
+	 flex: 0 0 30%;
+}
+
+/*EditProduct ProductList裡使用到*/
+.overflow_Auto {
+	overflow: auto;
+}
+
+.img_Frame img {
+	width: 90%;
+}
+
+/*DeleteProduct裡使用到*/
+.align_left {
+	text-align: left;
+}
+
+.outline_style {
+	outline: 1px solid black;
+}
+
+@media (min-width:700px) and (max-width:1000px){
+	.addProduct_Form_Space
+	{
+		width: 80%;
+	}
+	.img_Frame img 
+	{
+		width: 60%;
+	}
+}
+
+@media (max-width:700px){
+	.addProduct_Form_Space
+	{
+		width: 90%;
+	}
+}
+
+@media (max-width:500px){
+	.addProduct_Form_Space
+	{
+		width: 100%;
+	}
+	.input_Space 
+	{
+		flex-direction: column;
+	}
+	.input_Space_Label
+	{
+		text-align: left;
+	}
+	.error_Message
+	{
+		margin:-5px 0 0 0;
+	}
+	.addProduct_Form_Space_Button_Space *
+	{
+		flex-basis: 40%;
+	}
+}

@@ -1,0 +1,255 @@
+﻿@model IEnumerable<ShoppingCarViewModel>
+<h1>購物車</h1>
+<hr style="border-width:5px; border-color:cornflowerblue">
+<div id="topDiv" class="product_Show">
+@{
+    int totalPrice = 0;
+    if (Model.Any())
+    {
+        <form id="myform" method="post" hidden="hidden">
+            @Html.AntiForgeryToken()
+            <input id="productID" name="idSelected"  type="text" hidden="hidden" />
+            <input id="currentProductCount" name="buyNumber"  type="number" hidden="hidden" />
+        </form>
+        foreach (var item in Model)
+        {
+            <div class="product_Item">
+                <div class="img_Space">
+                    <img src="~/ProductPicture/@(item.product.ID).jpeg" asp-append-version="true" width="300" alt="無商品圖片" title="@(item.product.Name)商品圖" />
+                </div>
+                <div class="product_Text_Space">
+                    <div>
+                        <strong class="flex_maxcontent">商品名稱:</strong>
+                        <div class="none overflow_Auto overflow_wrap_anywhere" id="@(item.product.ID)Name">@item.product.Name</div>
+                    </div>
+                    <div>
+                        <strong class="flex_maxcontent">價格:</strong>
+                        <div class="none overflow_Auto overflow_wrap_anywhere" id="@(item.product.ID)Price">@(item.product.Price)元</div>
+                    </div>
+                    <div class="input_Space">
+                        <strong class="input_Space_Label">購買數量:</strong>
+                        <div class="number_Input_Space input_Space_Input">
+                            <button id="@(item.product.ID)minus" mode="minus" class="minus" type="button">-</button>
+                            <input id="@(item.product.ID)Count" value="@item.productNumber" class="numberInput" type="text" pattern="\d*" readonly>
+                            <button id="@(item.product.ID)plus" mode="plus" class="plus" type="button">+</button>
+                        </div>
+                    </div>
+                        <div class="product_Show_Button_Space margin_top">
+                        <button id="@item.product.ID" mode="delete" type="button">移除</button>
+                    </div>
+                </div>
+            </div>
+            <div style="border:1px solid black;"></div>
+            totalPrice += item.product.Price * item.productNumber;
+        }
+        <div class="totalPrice_Space">
+            <strong class="input_Space_Label">總計:</strong>
+            <div id="totalPrice">@(totalPrice)元</div>
+        </div>
+        <div class="product_Show_Button_Space justify_content_end_start">
+            <button id="confirmButton" mode="confirm" type="button">確認</button>
+            <button id="cancelButton" mode="cancel" type="button">取消</button>
+        </div>
+        <span id="noProductMessage" style="font-size:20px; display:none;">無商品</span>
+    }
+    else
+    {
+        <span style="font-size:20px;">無商品</span>
+    }
+}
+</div>
+@await Html.PartialAsync("MessagePage")
+<style>
+    .product_Item {
+        flex-basis: 300px;
+    }
+    .totalPrice_Space {
+        display: flex;
+        column-gap: 5px;
+        justify-content: flex-end;
+        font-size: 25px;
+    }
+    .margin_top {
+        margin-top: 6px;
+    }
+
+    #confirmButton, #cancelButton {
+        font-size: 25px;
+    }
+
+    .justify_content_end_start {
+        justify-content: flex-end;
+    }
+    @@media (max-width:800px)
+    {
+        .input_Space 
+        {
+            flex-direction: column;
+        }
+    }
+    @@media (max-width:500px) 
+    {
+        .img_Space
+        {
+            text-align: center;
+            max-height: 300px;
+            flex-basis: auto;
+        }
+        .totalPrice_Space
+        {
+            flex-direction: column;
+        }
+        #confirmButton, #cancelButton {
+            font-size: 20px;
+        }
+        .justify_content_end_start {
+            justify-content: flex-start;
+        }
+    }
+</style>
+<script>
+    /*購物車頁面邏輯*/
+    const topDiv = document.getElementById('topDiv');
+    const form = document.getElementById('myform');
+    const productIDInput = document.getElementById('productID');
+    const productCountInput = document.getElementById('currentProductCount');
+    const totalPrice = document.getElementById('totalPrice');
+    topDiv.addEventListener('click',function(e) {
+        if(e.target.tagName === 'BUTTON')
+        {
+            if(e.target.getAttribute('mode') === 'confirm')
+            {
+                /*確認按鈕邏輯*/
+                if(!document.getElementById("layoutUserName"))
+                {
+                    fetch('/api/ShoppingCarProcess/Count', {
+                        method: 'POST',
+                        body: new FormData(form),
+                    }).then(response => {
+                        if(!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                        return response.text();
+                    }).then(result => {
+                        if(result === '0')
+                        {
+                            MessageDisplayInformation('購物車已被清除，請至首頁重新將商品加入購物車');
+                            return;
+                        }
+                        form.action = '@Url.Action("PaymentMethod", "Buy")';
+                        form.submit();
+                    }).catch(error => {
+                        MessageDisplay(false,'發生錯誤');
+                        console.log(error);
+                    });
+                }
+                else
+                {
+                    form.action = '@Url.Action("PaymentMethod", "Buy")';
+                    form.submit();
+                }
+            }
+            else if(e.target.getAttribute('mode') === 'cancel')
+            {
+                /*取消按鈕邏輯*/
+                window.location.href = '@Url.Action("HomePage", "Home")';
+            }
+            else if(e.target.getAttribute('mode') === 'delete')
+            {
+                /*移除按鈕邏輯*/
+                MessagePageShow();
+                productIDInput.value = e.target.id;
+                fetch('/api/ShoppingCarProcess/Delete', {
+                    method: 'POST',
+                    body: new FormData(form),
+                }).then(response => {
+                    if(!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                    return response.text();
+                }).then(result => {
+                    if(result === "success")
+                    {
+                        const productItem = e.target.closest('.product_Item');
+                        const underLine = productItem.nextElementSibling;
+                        const productPrice = document.getElementById(`${e.target.id}Price`);
+                        const currentproductCount = document.getElementById(`${e.target.id}Count`);
+                        const updateTotalPrice = Number(totalPrice.textContent.replace('元','')) - Number(productPrice.textContent.replace('元','')) * Number(currentproductCount.value);
+                        totalPrice.textContent = `${updateTotalPrice}元`;
+                        countReduce();
+                        underLine.remove();
+                        productItem.remove();
+                        if(updateTotalPrice === 0)
+                        {
+                            const totalPriceSpace = document.querySelector('.totalPrice_Space');
+                            const buttonSpace = document.querySelector('.product_Show_Button_Space');
+                            totalPriceSpace.remove();
+                            buttonSpace.remove();
+                            const noProductMessage = document.getElementById('noProductMessage');
+                            noProductMessage.style.display = 'inline';
+                        }
+                        MessageDisplay(true,'成功移除商品');
+                    }
+                    else if(result === "false")
+                    {
+                        MessageDisplay(false,'商品移除失敗請聯絡客服');
+                    }
+                }).catch(error => {
+                    MessageDisplay(false,'發生錯誤');
+                    console.log(error);
+                });
+            }
+            else if(e.target.getAttribute('mode') === "minus" || e.target.getAttribute('mode') === "plus" )
+            {
+                //+ -按鈕邏輯
+                MessagePageShow();
+                const productID = e.target.id.replace(/minus|plus/g,'');
+                const productCount =  document.getElementById(`${productID}Count`);
+                let updateCount = Number(productCount.value);
+                if(e.target.getAttribute('mode') === "plus")
+                {
+                    updateCount += 1;
+                }
+                else if(e.target.getAttribute('mode') === "minus")
+                {
+                    updateCount -= 1;
+                }
+                if(updateCount === 0)
+                {
+                    const deleteButton = document.getElementById(`${productID}`);
+                    deleteButton.click();
+                    return;
+                }
+                productIDInput.value = productID;
+                productCountInput.value = updateCount
+                fetch('/api/ShoppingCarProcess/Edit', {
+                    method: 'POST',
+                    body: new FormData(form),
+                }).then(response => {
+                    if(!response.ok) throw new Error(`HTTP狀態碼:${response.status}`);
+                    return response.text();
+                }).then(result => {
+                    if(result === "success")
+                    {
+                        productCount.value = updateCount;
+                        const productPrice = document.getElementById(`${productID}Price`);
+                        let updateTotalPrice;
+                        if(e.target.getAttribute('mode') === "plus")
+                        {
+                            updateTotalPrice = Number(totalPrice.textContent.replace('元','')) + Number(productPrice.textContent.replace('元',''));
+                        }
+                        else if(e.target.getAttribute('mode') === "minus")
+                        {
+                            updateTotalPrice = Number(totalPrice.textContent.replace('元','')) - Number(productPrice.textContent.replace('元',''));
+                        }
+                        totalPrice.textContent = `${updateTotalPrice}元`;
+                        MessageDisplay(true,'成功修改商品數量');
+                    }
+                    else if(result === "false")
+                    {
+                        MessageDisplay(false,'商品數量修改失敗請聯絡客服');
+                    }
+                }).catch(error => {
+                    MessageDisplay(false,'發生錯誤');
+                    console.log(error);
+                });
+            }
+        }
+    });
+</script>
