@@ -9,6 +9,7 @@
 - [背景服務](#背景服務)
 - [SSE](#SSE)
 - [安全性](#安全性)
+- [開始體驗](#開始體驗)
 # 簡介
 以 **ASP.NET Core MVC** 為後端架構製作的簡易購物網站，並使用**SQLite**資料庫來儲存資料。
 # 使用流程
@@ -55,3 +56,8 @@
 :sparkle:**密碼加密儲存**:使用者的密碼是經過加密再儲存，而不是直接存進資料庫，縱使資料庫真的外洩，也無法得知真正的密碼。<br>
 :sparkle:**檔案指紋辨識**:偵測檔案指紋確認檔案真實格式，避免惡意人士透過修改副檔名，上傳惡意檔案。<br>
 :sparkle:**重新編碼儲存檔案**:透過讀取檔案再儲存，等同重新編碼一次，可以去除隱藏在檔案中的惡意編碼。<br>
+# 開始體驗
+1. **環境建置**:請先至[https://dotnet.microsoft.com/zh-tw/download/dotnet/9.0](https://dotnet.microsoft.com/zh-tw/download/dotnet/9.0)下載ASP.NET Core 執行階段 9.0.16 並安裝。
+2. **部屬程式碼**:下載此頁面的[publish.zip](./publish.zip)，並解壓縮。
+3. **啟動網站**:解壓縮完，進入publish資料夾，執行啟動網站.exe。
+4. **連線到網站**:開啟瀏覽器，連線到[http://localhost:5000](http://localhost:5000)，開始使用。
