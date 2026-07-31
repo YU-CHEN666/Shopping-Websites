@@ -23,15 +23,15 @@
             <span class="error_Message" asp-validation-for="Price"></span>
             <div class="input_Space">
                 <span class="input_Space_Label">目前商品圖片:</span>
-                @if (Model.ID == "none")
-                {
-                    <div style="text-align:left">無商品圖片</div>
-                }
-                else
+                @if (File.Exists(System.IO.Path.Combine((string)ViewData["webRootPath"],"ProductPicture",$"{Model.ID}.jpeg")))
                 {
                     <div class="input_Space_Input overflow_Auto">
                         <img src=" ~/ProductPicture/@(Model.ID).jpeg" width="300" asp-append-version="true" />
                     </div>
+                }
+                else
+                {
+                    <div style="text-align:left">無商品圖片</div>
                 }
             </div>
             <div class="input_Space">
