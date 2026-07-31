@@ -11,11 +11,14 @@ namespace WebApplication1.Controllers
     {
         private readonly Database _database;
         private readonly FileProcess _fileProcess;
-        public EditController(Database database,FileProcess fileProcess)
+		private readonly IWebHostEnvironment _env;
+		public EditController(Database database,FileProcess fileProcess, IWebHostEnvironment env)
         {
             _database = database;
             _fileProcess = fileProcess;
-        }
+            _env = env;
+
+		}
 
         [HttpPost]
 		[Authorize]
@@ -57,6 +60,7 @@ namespace WebApplication1.Controllers
 		[Authorize]
 		public IActionResult EditProduct([FromForm] string? idSelected, EditProductViewModel dataModel)
         {
+			ViewData["webRootPath"] = _env.WebRootPath;
 			//按鈕的路由
 			if (idSelected is not null)
             {
