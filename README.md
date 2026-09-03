@@ -10,6 +10,7 @@
 - [SSE](#SSE)
 - [安全性](#安全性)
 - [開始體驗](#開始體驗)
+- [實際運作影片](#實際運作影片)
 # 簡介
 以 **ASP.NET Core MVC** 為後端架構製作的簡易購物網站，並使用**SQLite**資料庫來儲存資料。
 # 使用流程
@@ -61,3 +62,5 @@
 2. **部屬程式碼**:下載此頁面的[publish.zip](./publish.zip)，並解壓縮。
 3. **啟動網站**:解壓縮完，進入publish資料夾，執行啟動網站.exe。
 4. **連線到網站**:開啟瀏覽器，連線到[http://localhost:5000](http://localhost:5000)，開始使用。
+# 實際運作影片
+網址:[https://youtu.be/qzbczPOeBV8?si=lgiq_Wt3osN6m_t4](https://youtu.be/qzbczPOeBV8?si=lgiq_Wt3osN6m_t4)
