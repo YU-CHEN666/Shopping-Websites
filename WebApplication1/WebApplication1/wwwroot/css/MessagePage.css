@@ -23,12 +23,13 @@
 }
 
 #circleRotation {
+    box-sizing: border-box;
     width: var(--cricle_width);
     height: var(--cricle_width);
     border-width: 10px;
     border-color: rgb(0,0,0) rgb(0,0,0,0.2) rgb(0,0,0,0.4) rgb(0,0,0,0.7);
     border-style: solid dashed dashed dashed;
-    border-radius: calc(var(--cricle_width) / 2);
+    border-radius: 50%;
     background-color: white;
     animation-name: Rotation;
     animation-iteration-count: infinite;
